@@ -10,6 +10,8 @@
  ******************************************************************************/
 package com.eclipsesource.v8;
 
+import android.content.Context;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
@@ -70,9 +72,9 @@ public class V8 extends V8Object {
         boolean          includeReceiver;
     }
 
-    private synchronized static void load(final String tmpDirectory) {
+    private synchronized static void load(final String tmpDirectory, Context context) {
         try {
-            LibraryLoader.loadLibrary(tmpDirectory);
+            LibraryLoader.loadLibrary(tmpDirectory, context);
             nativeLibraryLoaded = true;
         } catch (Error e) {
             nativeLoadError = e;
@@ -111,7 +113,7 @@ public class V8 extends V8Object {
      * @return A new isolated V8 Runtime.
      */
     public static V8 createV8Runtime() {
-        return createV8Runtime(null, null);
+        return createV8Runtime(null, null, null);
     }
 
     /**
@@ -126,7 +128,7 @@ public class V8 extends V8Object {
      * @return A new isolated V8 Runtime.
      */
     public static V8 createV8Runtime(final String globalAlias) {
-        return createV8Runtime(globalAlias, null);
+        return createV8Runtime(globalAlias, null, null);
     }
 
     /**
@@ -142,11 +144,11 @@ public class V8 extends V8Object {
      *
      * @return A new isolated V8 Runtime.
      */
-    public static V8 createV8Runtime(final String globalAlias, final String tempDirectory) {
+    public static V8 createV8Runtime(final String globalAlias, final String tempDirectory, Context context) {
         if (!nativeLibraryLoaded) {
             synchronized (lock) {
                 if (!nativeLibraryLoaded) {
-                    load(tempDirectory);
+                    load(tempDirectory, context);
                 }
             }
         }

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package com.eclipsesource.v8;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,9 +40,15 @@ class LibraryLoader {
         return "lib" + computeLibraryShortName() + "." + getOSFileExtension();
     }
 
-    static void loadLibrary(final String tempDirectory) {
+    static void loadLibrary(final String tempDirectory, Context context) {
         if ( isAndroid() ) {
-            System.loadLibrary("j2v8");
+
+            if (context == null) {
+                System.loadLibrary("j2v8");
+            } else {
+                System.load(context.getDir("libs", Context.MODE_PRIVATE).getAbsolutePath().concat("/libj2v8.so"));
+            }
+
             return;
         }
         StringBuffer message = new StringBuffer();
